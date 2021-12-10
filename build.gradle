@@ -1,0 +1,72 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+apply plugin: 'maven-publish'
+
+group 'com.appletalk'
+def pluginVersion = '1.0.0'
+ext.jitpackGroup = group + '.dailyPlugin'
+ext.jitpackVersion = 'main-' + pluginVersion
+version '1.0.0'
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+}
+
+repositories {
+    mavenCentral()
+    // Spigot
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    // JitPack
+    maven { url 'https://jitpack.io' }
+    // Because Spigot depends on Bungeecord ChatComponent-API
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.17.1-R0.1-SNAPSHOT'
+    implementation group: 'net.kyori', name: 'adventure-text-minimessage', version: '4.2.0-SNAPSHOT'
+    implementation group: 'net.kyori', name: 'adventure-platform-bukkit', version: '4.0.0'
+}
+
+
+shadowJar {
+    relocate 'net.kyori', 'com.appletalk.study.shaded.kyori'
+
+    manifest {
+        attributes(
+                'Built-By': System.properties['user.name'],
+                'Version': pluginVersion,
+                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': "${System.properties['java.version']} " +
+                        "(${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} " +
+                        "${System.properties['os.version']}"
+        )
+    }
+}
+
+shadowJar {
+    destinationDir new File("C:\\Users\\Production\\Desktop\\testserver\\plugins")
+}
+
+compileJava.dependsOn clean
+build.dependsOn shadowJar
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            artifact shadowJar
+        }
+    }
+}

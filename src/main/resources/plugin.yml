@@ -1,0 +1,25 @@
+name: dailyShop
+main: com.appletalk.dailyPlugin.dailyShopPlugin
+version: 1.0.0
+description: dailyShop plugin for dailyFarm
+author: appletalk
+api-version: 1.17
+commands:
+  dailyShop:
+    description: Manage shop.
+    permission: dailyShop.help
+    usage: /dailyShop (help|dump)
+           /dailyShop list [-v]
+#           /plugman check <plugin|all> [-f]
+#           /plugman lookup <command>
+#           /plugman (enable|disable|restart) <plugin|all>
+#           /plugman (info|usage|load|reload|unload) <plugin>
+permissions:
+  dailyShop.admin:
+    description: Allows use of all dailyShop commands.
+    default: op
+    children:
+      dailyShop.help: true
+  dailyShop.help:
+    description: Allows use of the help command.
+    default: op
