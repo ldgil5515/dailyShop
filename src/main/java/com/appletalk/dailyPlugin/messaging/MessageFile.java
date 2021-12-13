@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 /**
  * Class that allows reading from a YAML file embedded in the JAR.
@@ -53,11 +54,9 @@ public class MessageFile {
      * @param name the name of the file.
      */
     public MessageFile(String name) {
-        // root 폴더에 messages.yml 파일이 있는지 검사
-
         if (!new File(dailyShopPlugin.getInstance().getDataFolder() + "/messages.yml").exists()) {
             try {
-                Files.copy(new File(this.getClass().getClassLoader().getResource("messages.yml").getPath()).toPath(), new File(dailyShopPlugin.getInstance().getDataFolder() + "/messages.yml").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(this.getClass().getClassLoader().getResourceAsStream(name), new File(dailyShopPlugin.getInstance().getDataFolder() + "/messages.yml").toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch(Exception e) {
                 System.out.println(e);
             }
@@ -85,5 +84,4 @@ public class MessageFile {
     public String get(String key) {
         return config.getString(key);
     }
-
 }

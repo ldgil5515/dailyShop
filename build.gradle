@@ -36,12 +36,13 @@ dependencies {
     compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.17.1-R0.1-SNAPSHOT'
     implementation group: 'net.kyori', name: 'adventure-text-minimessage', version: '4.2.0-SNAPSHOT'
     implementation group: 'net.kyori', name: 'adventure-platform-bukkit', version: '4.0.0'
+    implementation group: 'com.github.stefvanschie.inventoryframework', name: 'IF', version: '0.10.0'
 }
 
 
 shadowJar {
-    relocate 'net.kyori', 'com.appletalk.study.shaded.kyori'
-
+    relocate 'net.kyori', 'com.appletalk.dailyPlugin.shaded.kyori'
+    relocate 'com.github.stefvanschie.inventoryframework', 'com.appletalk.dailyPlugin.shaded.inventoryframework'
     manifest {
         attributes(
                 'Built-By': System.properties['user.name'],
@@ -57,7 +58,7 @@ shadowJar {
 }
 
 shadowJar {
-    destinationDir new File("C:\\Users\\Production\\Desktop\\testserver\\plugins")
+    destinationDir new File("C:\\Users\\ldgil5515\\Desktop\\workspace\\testserver\\plugins")
 }
 
 compileJava.dependsOn clean

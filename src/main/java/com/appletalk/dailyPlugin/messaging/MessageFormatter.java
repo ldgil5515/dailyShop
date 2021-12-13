@@ -2,32 +2,15 @@ package com.appletalk.dailyPlugin.messaging;
 
 import org.bukkit.ChatColor;
 
-/**
- * Manages custom messages.
- *
- * @author rylinaux
- */
-public class MessageFormatter {
+import java.util.List;
 
-    /**
-     * The configuration file.
-     */
+public final class MessageFormatter {
+
     private final MessageFile messageFile;
-
-    /**
-     * Construct our object.
-     */
     public MessageFormatter() {
         this.messageFile = new MessageFile("messages.yml");
     }
 
-    /**
-     * Returns the formatted version of the message.
-     *
-     * @param key  the key
-     * @param args the args to replace
-     * @return the formatted String
-     */
     public String format(String key, Object... args) {
         return format(true, key, args);
     }
@@ -46,15 +29,15 @@ public class MessageFormatter {
             message = message.replace("{" + i + "}", String.valueOf(args[i]));
         return ChatColor.translateAlternateColorCodes('&', message);
     }
-
     /**
      * Add the prefix to a message.
      *
      * @param msg the message.
      * @return the message with the prefix.
      */
-    public String prefix(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', messageFile.get("prefix") + msg);
+    public static String prefix(String msg) {
+        MessageFormatter messageformatter = new MessageFormatter();
+        return ChatColor.translateAlternateColorCodes('&', messageformatter.messageFile.get("prefix") + msg);
     }
 
     /**

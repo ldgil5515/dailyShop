@@ -23,8 +23,20 @@ public class dailyShopCommandHandler implements CommandExecutor {
             case "help":
                 cmd = new HelpCommand(sender);
                 break;
+            case "open":
+                cmd = new OpenCommand(sender);
+                break;
             case "create":
                 cmd = new CreateCommand(sender);
+                break;
+            case "delete":
+                cmd = new DeleteCommand(sender);
+                break;
+            case "list":
+                cmd = new ListCommand(sender);
+                break;
+            case "set":
+                cmd = new SetCommand(sender);
                 break;
         }
 

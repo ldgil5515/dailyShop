@@ -4,7 +4,6 @@ import com.appletalk.dailyPlugin.dailyShopPlugin;
 import com.appletalk.dailyPlugin.messaging.MessageFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -13,27 +12,27 @@ import java.io.File;
 /**
  * Command that displays the help.
  */
-public class CreateCommand extends AbstractCommand {
+public class DeleteCommand extends AbstractCommand {
 
     /**
      * The name of the command.
      */
-    public static final String NAME = "Create";
+    public static final String NAME = "Delete";
 
     /**
      * The description of the command.
      */
-    public static final String DESCRIPTION = "Create a shop";
+    public static final String DESCRIPTION = "Delete a shop";
 
     /**
      * The main permission of the command.
      */
-    public static final String PERMISSION = "dailyShop.create";
+    public static final String PERMISSION = "dailyShop.delete";
 
     /**
      * The proper usage of the command.
      */
-    public static final String USAGE = "/dailyShop create";
+    public static final String USAGE = "/dailyShop delete";
 
     /**
      * The sub permissions of the command.
@@ -45,7 +44,7 @@ public class CreateCommand extends AbstractCommand {
      *
      * @param sender the command sender
      */
-    public CreateCommand(CommandSender sender) {
+    public DeleteCommand(CommandSender sender) {
         super(sender, NAME, DESCRIPTION, PERMISSION, SUB_PERMISSIONS, USAGE);
     }
 
@@ -66,16 +65,14 @@ public class CreateCommand extends AbstractCommand {
         }
 
         Player p = (Player) sender;
-
-        YamlConfiguration shopConfig = new YamlConfiguration();
-        shopConfig.set("row", 6);
-        shopConfig.set("gui", "default");
+        File deleteFile = new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml");
+        
+        dailyShopPlugin.getInstance().shopMap.remove(args[1]);
         try {
-            shopConfig.save(new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml"));
-            dailyShopPlugin.getInstance().shopMap.put(args[1], shopConfig);
-            p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 생성되었습니다."));
+            deleteFile.delete();
+            p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 삭제되었습니다."));
         } catch (Exception var4) {
-            p.sendMessage(MessageFormatter.prefix("상점이 생성이 실패하였습니다."));
+            p.sendMessage(MessageFormatter.prefix("상점 삭제를 실패하였습니다."));
         }
     }
 }

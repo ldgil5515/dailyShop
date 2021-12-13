@@ -2,6 +2,7 @@ package com.appletalk.dailyPlugin.commands;
 
 import com.appletalk.dailyPlugin.dailyShopPlugin;
 import com.appletalk.dailyPlugin.messaging.MessageFormatter;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,27 +14,27 @@ import java.io.File;
 /**
  * Command that displays the help.
  */
-public class CreateCommand extends AbstractCommand {
+public class ListCommand extends AbstractCommand {
 
     /**
      * The name of the command.
      */
-    public static final String NAME = "Create";
+    public static final String NAME = "List";
 
     /**
      * The description of the command.
      */
-    public static final String DESCRIPTION = "Create a shop";
+    public static final String DESCRIPTION = "Show list of shop";
 
     /**
      * The main permission of the command.
      */
-    public static final String PERMISSION = "dailyShop.create";
+    public static final String PERMISSION = "dailyShop.list";
 
     /**
      * The proper usage of the command.
      */
-    public static final String USAGE = "/dailyShop create";
+    public static final String USAGE = "/dailyShop list";
 
     /**
      * The sub permissions of the command.
@@ -45,7 +46,7 @@ public class CreateCommand extends AbstractCommand {
      *
      * @param sender the command sender
      */
-    public CreateCommand(CommandSender sender) {
+    public ListCommand(CommandSender sender) {
         super(sender, NAME, DESCRIPTION, PERMISSION, SUB_PERMISSIONS, USAGE);
     }
 
@@ -64,18 +65,14 @@ public class CreateCommand extends AbstractCommand {
             sender.sendMessage(dailyShopPlugin.getInstance().getMessageFormatter().format("error.no-permission"));
             return;
         }
-
         Player p = (Player) sender;
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "\n&r  &6&l●  &r&f상점 목록\n "));
 
-        YamlConfiguration shopConfig = new YamlConfiguration();
-        shopConfig.set("row", 6);
-        shopConfig.set("gui", "default");
-        try {
-            shopConfig.save(new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml"));
-            dailyShopPlugin.getInstance().shopMap.put(args[1], shopConfig);
-            p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 생성되었습니다."));
-        } catch (Exception var4) {
-            p.sendMessage(MessageFormatter.prefix("상점이 생성이 실패하였습니다."));
+        int index = 0;
+        for(String i : dailyShopPlugin.getInstance().shopMap.keySet()){
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&',"  &3&l" + index + "&l&f - &r" + i));
+            index++;
         }
+        p.sendMessage("");
     }
 }

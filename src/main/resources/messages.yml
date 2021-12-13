@@ -57,7 +57,9 @@ info:
   depends: '&7- Depends: {0}'
   softdepends: '&7- SoftDepends: &a{0}'
 list:
-  list: '&9Plugins ({0}): {1}'
+  header1: ''
+  header2: '&7--------------------- [&6 dailyShop &7] ---------------------'
+  header3: ''
 load:
   already-loaded: '&c{0} is already loaded.'
   cannot-find: '&cCould not find file and failed to search descriptions.'
