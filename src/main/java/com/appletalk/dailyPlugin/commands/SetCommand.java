@@ -137,7 +137,7 @@ public class SetCommand extends AbstractCommand {
         });
         gui.setOnClose(event -> {
             List<ItemStack> saveItemStack = Arrays.asList(gui.getInventory().getContents());
-            saveItemStack = NBTHandler.removeListNBT(saveItemStack, "if-uuid");
+            NBTHandler.removeListNBT(saveItemStack, "if-uuid");
             dailyShopPlugin.getInstance().shopMap.get(args[2]).set("item", saveItemStack);
             p.sendMessage(MessageFormatter.prefix("상점 아이템 설정이 완료되었습니다."));
         });

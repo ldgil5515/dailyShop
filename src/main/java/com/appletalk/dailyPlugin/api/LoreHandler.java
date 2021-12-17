@@ -10,9 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LoreHandler {
-    public static ItemStack addBuyLore(ItemStack itemStack, Integer price) {
+    public static void addBuyLore(ItemStack itemStack, Integer price) {
         if(itemStack != null){
-            ItemStack dummyItem = itemStack;
             List<String> itemLore = new ArrayList<>();
             if(itemStack.getItemMeta().hasLore()){
                 itemLore = itemStack.getItemMeta().getLore();
@@ -46,15 +45,12 @@ public class LoreHandler {
 
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setLore(itemLore);
-            dummyItem.setItemMeta(itemMeta);
-            return dummyItem;
+            itemStack.setItemMeta(itemMeta);
         }
-        return itemStack;
     };
 
-    public static ItemStack addSellLore(ItemStack itemStack, Integer price) {
+    public static void addSellLore(ItemStack itemStack, Integer price) {
         if(itemStack != null){
-            ItemStack dummyItem = itemStack;
             List<String> itemLore = new ArrayList<>();
             if(itemStack.getItemMeta().hasLore()){
                 itemLore = itemStack.getItemMeta().getLore();
@@ -88,11 +84,38 @@ public class LoreHandler {
 
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setLore(itemLore);
-            dummyItem.setItemMeta(itemMeta);
-            return dummyItem;
+            itemStack.setItemMeta(itemMeta);
         }
-        return itemStack;
     };
+
+    public static Integer getPrice(ItemStack itemStack, boolean isBuy) {
+        String parsingString = isBuy?"아이템 구매가격:":"아이템 판매가격:";
+
+        if(itemStack.getItemMeta().hasLore()){
+            List<String> itemLore = itemStack.getItemMeta().getLore();
+            for (String s : itemLore) {
+                if(s.contains(parsingString)) {
+                    return Integer.valueOf(s.split("§6")[1].split("§")[0]);
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    public static void removeShopLore(ItemStack itemStack) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        List<String> itemLore = itemStack.getItemMeta().getLore();
+        int removeCount = 0;
+        if(isListContain(itemLore,"구매가격:") && isListContain(itemLore,"판매가격:")) removeCount = 9;
+        else if(isListContain(itemLore,"구매가격:")|| isListContain(itemLore,"판매가격:")) removeCount = 6;
+        else return;
+
+        for(int i=0; i<removeCount; i++) itemLore.remove(itemLore.size()-1);
+
+        itemMeta.setLore(itemLore);
+        itemStack.setItemMeta(itemMeta);
+    }
 
     private static boolean isListContain(List<String> itemLore, String compareString){
         boolean isContain = false;

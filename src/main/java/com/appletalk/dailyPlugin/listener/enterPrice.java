@@ -32,10 +32,10 @@ public class enterPrice implements Listener {
                 List<ItemStack> itemlist = (List<ItemStack>) dailyShopPlugin.getInstance().shopMap.get(enterPriceFlag.get(p.getName()).targetShop).get("item");
                 ItemStack itemStack = itemlist.get(itemlist.indexOf(enterPriceFlag.get(p.getName()).targetItem));
                 if(enterPriceFlag.get(p.getName()).isBuy){
-                    itemlist.set(itemlist.indexOf(enterPriceFlag.get(p.getName()).targetItem), LoreHandler.addBuyLore(itemStack, price));
+                    LoreHandler.addBuyLore(itemStack, price);
                 }
                 else {
-                    itemlist.set(itemlist.indexOf(enterPriceFlag.get(p.getName()).targetItem), LoreHandler.addSellLore(itemStack, price));
+                    LoreHandler.addSellLore(itemStack, price);
                 }
                 dailyShopPlugin.getInstance().shopMap.get(enterPriceFlag.get(p.getName()).targetShop).set("item", itemlist);
                 enterPriceFlag.remove(p.getName());

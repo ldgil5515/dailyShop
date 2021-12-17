@@ -30,19 +30,24 @@ repositories {
     maven { url 'https://jitpack.io' }
     // Because Spigot depends on Bungeecord ChatComponent-API
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    // Vault
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.17.1-R0.1-SNAPSHOT'
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     implementation group: 'net.kyori', name: 'adventure-text-minimessage', version: '4.2.0-SNAPSHOT'
     implementation group: 'net.kyori', name: 'adventure-platform-bukkit', version: '4.0.0'
     implementation group: 'com.github.stefvanschie.inventoryframework', name: 'IF', version: '0.10.0'
+    implementation fileTree (dir: 'lib', include:['**/*.jar'])
 }
 
 
 shadowJar {
     relocate 'net.kyori', 'com.appletalk.dailyPlugin.shaded.kyori'
     relocate 'com.github.stefvanschie.inventoryframework', 'com.appletalk.dailyPlugin.shaded.inventoryframework'
+
     manifest {
         attributes(
                 'Built-By': System.properties['user.name'],
@@ -58,7 +63,7 @@ shadowJar {
 }
 
 shadowJar {
-    destinationDir new File("C:\\Users\\ldgil5515\\Desktop\\workspace\\testserver\\plugins")
+    destinationDir new File("C:\\Users\\Production\\Desktop\\testserver\\plugins")
 }
 
 compileJava.dependsOn clean
