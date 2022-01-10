@@ -25,11 +25,14 @@ public class dailyShopPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
         messageFormatter = new MessageFormatter();
-        this.getCommand("dailyShop").setExecutor(new dailyShopCommandHandler());
+        this.getCommand("상점").setExecutor(new dailyShopCommandHandler());
+        this.getCommand("상점").setTabCompleter(new dailyShopTabCompleter());
         getServer().getPluginManager().registerEvents(enterPrice.INSTANCE, this);
         initConfig();
         loadShopConfig();
-        setupEconomy();
+        if(!setupEconomy()){
+            System.out.println("Failed load Vault!");
+        }
     }
 
     @Override
@@ -74,6 +77,6 @@ public class dailyShopPlugin extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 }

@@ -1,19 +1,20 @@
 package com.appletalk.dailyPlugin.listener;
 
 import com.appletalk.dailyPlugin.api.LoreHandler;
-import com.appletalk.dailyPlugin.commands.SetCommand;
 import com.appletalk.dailyPlugin.dailyShopPlugin;
-import org.bukkit.entity.Item;
+import com.appletalk.dailyPlugin.messaging.MessageFormatter;
+import com.appletalk.dailyPlugin.utils.ClickTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.bukkit.Bukkit.getServer;
 
 
 public class enterPrice implements Listener {
@@ -21,7 +22,7 @@ public class enterPrice implements Listener {
     public Map<String, ClickTarget> enterPriceFlag = new HashMap<>();
 
     @EventHandler
-    private void enterPrice(PlayerChatEvent e){
+    private void onPlayerChat(AsyncPlayerChatEvent e){
         Player p = e.getPlayer();
 
         if(enterPriceFlag.containsKey(p.getName())){
@@ -29,21 +30,19 @@ public class enterPrice implements Listener {
             try {
                 int price = Integer.parseInt(e.getMessage());
 
-                List<ItemStack> itemlist = (List<ItemStack>) dailyShopPlugin.getInstance().shopMap.get(enterPriceFlag.get(p.getName()).targetShop).get("item");
-                ItemStack itemStack = itemlist.get(itemlist.indexOf(enterPriceFlag.get(p.getName()).targetItem));
-                if(enterPriceFlag.get(p.getName()).isBuy){
-                    LoreHandler.addBuyLore(itemStack, price);
-                }
-                else {
-                    LoreHandler.addSellLore(itemStack, price);
-                }
+                List<?> itemlist = dailyShopPlugin.getInstance().shopMap.get(enterPriceFlag.get(p.getName()).targetShop).getList("item");
+                assert itemlist != null;
+                ItemStack itemStack = (ItemStack) itemlist.get(itemlist.indexOf(enterPriceFlag.get(p.getName()).targetItem));
+                LoreHandler.addLore(itemStack, price, enterPriceFlag.get(p.getName()).isBuy);
                 dailyShopPlugin.getInstance().shopMap.get(enterPriceFlag.get(p.getName()).targetShop).set("item", itemlist);
-                enterPriceFlag.remove(p.getName());
+                getServer().getScheduler().runTask(dailyShopPlugin.getInstance(), () -> {
+                    p.chat("/상점 설정 " + enterPriceFlag.get(p.getName()).targetShop + " 아이템");
+                    enterPriceFlag.remove(p.getName());
+                });
             } catch (NumberFormatException r){
-                p.sendMessage("숫자만 입력해주세요.");
+                p.sendMessage(MessageFormatter.prefix("가격이 올바르지 않습니다."));
             }
         }
-        return;
     }
 }
 

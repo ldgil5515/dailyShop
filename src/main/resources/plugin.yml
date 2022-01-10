@@ -5,15 +5,18 @@ description: dailyShop plugin for dailyFarm
 author: appletalk
 api-version: 1.17
 commands:
-  dailyShop:
+  상점:
     description: Manage shop.
     permission: dailyShop.help
-    usage: /dailyShop (help|dump)
-           /dailyShop list [-v]
-#           /plugman check <plugin|all> [-f]
-#           /plugman lookup <command>
-#           /plugman (enable|disable|restart) <plugin|all>
-#           /plugman (info|usage|load|reload|unload) <plugin>
+    usage: /상점 (help|dump)
+           /상점 목록 [-v]
+           /상점 도움말 [-v]
+           /상점 열기 <상점이름>
+           /상점 목록 [-v]
+           /상점 생성 <상점이름>
+           /상점 삭제 <상점이름>
+           /상점 설정 <상점이름> <아이템/줄/gui>
+
 permissions:
   dailyShop.admin:
     description: Allows use of all dailyShop commands.

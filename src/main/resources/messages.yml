@@ -6,7 +6,7 @@
 # With new updates, this is subject to change and previous versions might not display information properly. Changes will be noted in the changelog.
 ###
 
-prefix: '&7[&6ailyShop&7] '
+prefix: '&7[&6상점&7] '
 check:
   header: '&9Retrieving plugin versions...'
   not-found: '&9Plugin not installed - latest available version is "{0}".'
@@ -19,17 +19,6 @@ check:
   unknown: '&cVersion information is unknown.'
   unknown-player: '&cUnknown (Installed): {0}'
   not-available: '&cVersion information for {0} is unavailable.'
-disable:
-  all: '&9All plugins have been disabled (excluding PlugMan).'
-  already-disabled: '&c{0} is already disabled.'
-  disabled: '&9{0} has been disabled.'
-dump:
-  dumped: '&9Plugins dumped to {0}.'
-  error: '&4Could not dump to file.'
-enable:
-  all: '&9All plugins have been enabled.'
-  already-enabled: '&c{0} is already enabled.'
-  enabled: '&9{0} has been enabled.'
 error:
   ignored: '&cPlugMan is configured to ignore that plugin.'
   invalid-plugin: '&cThat is not a valid plugin.'
@@ -41,45 +30,19 @@ error:
     description: '&7- &9Description: &7{0}'
     usage: '&7- &9Usage: &7{0}'
 help:
-  header: '&7--------------------- [&6 dailyShop &7] ---------------------'
-  help: '&7- &3&l/dailyShop help &r- 도움말을 확인합니다.'
-  open: '&7- &3&l/dailyShop open <상점이름> &r- 상점 오픈합니다.'
-  list: '&7- &3&l/dailyShop list &r- 상점 리스트를 확인합니다.'
-  create: '&7- &3&l/dailyShop create <상점이름> &r- 상점을 생성합니다.'
-  delete: '&7- &3&l/dailyShop delete <상점이름> &r- 상점을 삭제합니다.'
-  set: '&7- &3&l/dailyShop set <상점이름> <row/item/gui> &r- 상점을 설정합니다.'
-
-info:
-  header: 'Plugin Information: {0}'
-  version: '&7- Version: &a{0}'
-  authors: '&7- Author(s): &a{0}'
-  status: '&7- Status: {0}'
-  depends: '&7- Depends: {0}'
-  softdepends: '&7- SoftDepends: &a{0}'
+  none: ''
+  header: '&r  &6&l●  &r&f상점과 관련한 명령어는 다음과 같습니다'
+  none1: ''
+  help: '&7- &3&l/상점 도움말 &r- 도움말을 확인합니다.'
+  open: '&7- &3&l/상점 열기 <상점이름> &r- 상점 오픈합니다.'
+  list: '&7- &3&l/상점 목록 &r- 상점 리스트를 확인합니다.'
+  create: '&7- &3&l/상점 생성 <상점이름> &r- 상점을 생성합니다.'
+  delete: '&7- &3&l/상점 삭제 <상점이름> &r- 상점을 삭제합니다.'
+  set: '&7- &3&l/상점 설정 <상점이름> <아이템/줄/gui> &r- 상점을 설정합니다.'
+  none2: ''
 list:
   header1: ''
   header2: '&7--------------------- [&6 dailyShop &7] ---------------------'
   header3: ''
-load:
-  already-loaded: '&c{0} is already loaded.'
-  cannot-find: '&cCould not find file and failed to search descriptions.'
-  invalid-description: '&cThat plugin has an invalid description.'
-  invalid-plugin: '&cThat file is not a valid plugin.'
-  loaded: '&9{0} has been loaded and enabled.'
-  plugin-dir: '&cPlugin directory not found.'
-lookup:
-  found: '&9/{0} is registered to {1}.'
-  not-found: '&cCommand "/{0}" not registered in any plugin.yml'
-reload:
-  all: '&9All plugins have been reloaded.'
-  reloaded: '&9{0} has been reloaded.'
-restart:
-  all: '&9All plugins have been restarted.'
-  restarted: '&9{0} has been restarted.'
-unload:
-  failed: '&cFailed to unload {0}.'
-  unloaded: '&9{0} has been unloaded.'
-updater:
-  available: '&9A new update is available: &ahttp://dev.bukkit.org/bukkit-plugins/plugman/'
 usage:
   usage: '&9Commands: &7{0}'

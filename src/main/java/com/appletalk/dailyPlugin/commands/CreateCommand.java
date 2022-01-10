@@ -64,18 +64,21 @@ public class CreateCommand extends AbstractCommand {
             sender.sendMessage(dailyShopPlugin.getInstance().getMessageFormatter().format("error.no-permission"));
             return;
         }
-
         Player p = (Player) sender;
 
-        YamlConfiguration shopConfig = new YamlConfiguration();
-        shopConfig.set("row", 6);
-        shopConfig.set("gui", "default");
-        try {
-            shopConfig.save(new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml"));
-            dailyShopPlugin.getInstance().shopMap.put(args[1], shopConfig);
-            p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 생성되었습니다."));
-        } catch (Exception var4) {
-            p.sendMessage(MessageFormatter.prefix("상점이 생성이 실패하였습니다."));
+        if(args.length != 2) p.sendMessage(MessageFormatter.prefix("상점이름을 입력해주세요."));
+        else if(dailyShopPlugin.getInstance().shopMap.containsKey(args[1])) p.sendMessage(MessageFormatter.prefix("중복된 상점이름입니다."));
+        else {
+            YamlConfiguration shopConfig = new YamlConfiguration();
+            shopConfig.set("row", 6);
+            shopConfig.set("gui", "default");
+            try {
+                shopConfig.save(new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml"));
+                dailyShopPlugin.getInstance().shopMap.put(args[1], shopConfig);
+                p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 생성되었습니다."));
+            } catch (Exception var4) {
+                p.sendMessage(MessageFormatter.prefix("상점이 생성이 실패하였습니다."));
+            }
         }
     }
 }

@@ -40,6 +40,17 @@ public final class MessageFormatter {
         return ChatColor.translateAlternateColorCodes('&', messageformatter.messageFile.get("prefix") + msg);
     }
 
+    public static String hasBase(String msg, String firstValue, String secondValue) {
+        char lastName = msg.charAt(msg.length() - 1);
+
+        if (lastName < 0xAC00 || lastName > 0xD7A3) {
+            return firstValue;
+        }
+
+        String seletedValue = (lastName - 0xAC00) % 28 > 0 ? firstValue : secondValue;
+        return seletedValue;
+    }
+
     /**
      * Returns the message configuration.
      *
@@ -48,5 +59,4 @@ public final class MessageFormatter {
     public MessageFile getMessageFile() {
         return messageFile;
     }
-
 }

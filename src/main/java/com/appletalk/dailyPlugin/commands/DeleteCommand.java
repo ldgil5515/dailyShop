@@ -65,14 +65,18 @@ public class DeleteCommand extends AbstractCommand {
         }
 
         Player p = (Player) sender;
-        File deleteFile = new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml");
-        
-        dailyShopPlugin.getInstance().shopMap.remove(args[1]);
-        try {
-            deleteFile.delete();
-            p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 삭제되었습니다."));
-        } catch (Exception var4) {
-            p.sendMessage(MessageFormatter.prefix("상점 삭제를 실패하였습니다."));
+
+        if(!dailyShopPlugin.getInstance().shopMap.containsKey(args[1])) p.sendMessage(MessageFormatter.prefix("존재하지 않는 상점입니다."));
+        else {
+            File deleteFile = new File(dailyShopPlugin.getInstance().getDataFolder() + "/" + "shopConfig", args[1] + ".yml");
+
+            dailyShopPlugin.getInstance().shopMap.remove(args[1]);
+            try {
+                deleteFile.delete();
+                p.sendMessage(MessageFormatter.prefix("상점이 성공적으로 삭제되었습니다."));
+            } catch (Exception var4) {
+                p.sendMessage(MessageFormatter.prefix("상점 삭제를 실패하였습니다."));
+            }
         }
     }
 }

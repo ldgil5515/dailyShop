@@ -63,7 +63,7 @@ shadowJar {
 }
 
 shadowJar {
-    destinationDir new File("C:\\Users\\Production\\Desktop\\testserver\\plugins")
+    destinationDir new File("C:\\Users\\ldgil5515\\Desktop\\workspace\\testserver\\plugins")
 }
 
 compileJava.dependsOn clean

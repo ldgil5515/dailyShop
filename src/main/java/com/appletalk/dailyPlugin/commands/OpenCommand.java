@@ -2,19 +2,21 @@ package com.appletalk.dailyPlugin.commands;
 
 import com.appletalk.dailyPlugin.api.LoreHandler;
 import com.appletalk.dailyPlugin.api.NBTHandler;
+import com.appletalk.dailyPlugin.dailyLangUtils;
 import com.appletalk.dailyPlugin.dailyShopPlugin;
 import com.appletalk.dailyPlugin.messaging.MessageFormatter;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import com.appletalk.dailyPlugin.dailyLangUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,71 +77,76 @@ public class OpenCommand extends AbstractCommand {
             sender.sendMessage(dailyShopPlugin.getInstance().getMessageFormatter().format("error.no-permission"));
             return;
         }
-
-        String menuTexture = "§f" + dailyShopPlugin.getInstance().shopMap.get(args[1]).get("gui");
-
-        Player p = (Player) sender;
-        final ChestGui gui = new ChestGui((Integer) dailyShopPlugin.getInstance().shopMap.get(args[1]).get("row"), menuTexture);
-        final StaticPane pane = new StaticPane(9, 6);
-
-        List<ItemStack> itemlist = (List<ItemStack>) dailyShopPlugin.getInstance().shopMap.get(args[1]).get("item");
-
-        int index = 0;
-        for(ItemStack s : itemlist.toArray(new ItemStack[0])){
-            if(s != null){
-                GuiItem newItem = new GuiItem(s);
-                pane.addItem(newItem, index%9, index/9);
-            }
-            index++;
+        if(args.length < 2) {
+            sender.sendMessage(MessageFormatter.prefix("상점 이름을 입력해주세요."));
+            return;
+        }
+        if(dailyShopPlugin.getInstance().shopMap.get(args[1]) == null) {
+            sender.sendMessage(MessageFormatter.prefix("존재하지 않는 메뉴입니다."));
+            return;
         }
 
+        Player p = (Player) sender;
+        String menuTexture = "§f" + dailyShopPlugin.getInstance().shopMap.get(args[1]).get("gui");
+        final ChestGui gui = new ChestGui(dailyShopPlugin.getInstance().shopMap.get(args[1]).getInt("row"), menuTexture);
+        final StaticPane pane = new StaticPane(9, 6);
+        List<?> itemlist = dailyShopPlugin.getInstance().shopMap.get(args[1]).getList("item");
+        if(itemlist != null){
+            int index = 0;
+            for(Object s : itemlist){
+                if(s instanceof ItemStack){
+                    GuiItem newItem = new GuiItem((ItemStack) s);
+                    pane.addItem(newItem, index%9, index/9);
+                }
+                index++;
+            }
+        }
         gui.addPane(pane);
+
         gui.setOnGlobalClick(event -> {
             event.setCancelled(true);
-            ItemStack itemStack = event.getCurrentItem().clone();
-            if(event.isLeftClick()) {
-                if(getPrice(itemStack,true) != 0){
-                    if(event.isShiftClick()) itemStack.setAmount(itemStack.getAmount()*64);
-                    int buyAmount = itemStack.getAmount();
-                    int payPrice = getPrice(event.getCurrentItem(),false) * buyAmount;
-
-                    if(dailyShopPlugin.getInstance().econ.getBalance(p.getName())>=payPrice){
-                        LoreHandler.removeShopLore(itemStack);
-                        NBTHandler.removeNBT(itemStack, "if-uuid");
-                        if(p.getInventory().addItem(itemStack).size() != 0){
-                            p.sendMessage(MessageFormatter.prefix("인벤토리에 공간이 부족합니다."));
-                        }
-                        else {
-                            dailyShopPlugin.getInstance().econ.withdrawPlayer(p.getName(), payPrice);
-                            p.sendMessage(MessageFormatter.prefix("&6" + translater.getItemDisplayName(itemStack, p) + "&f를 &6" + payPrice + "&f원에 구매하였습니다."));
-                        }
-                    } else {
-                        p.sendMessage(MessageFormatter.prefix("돈이 부족합니다."));
-                    }
-                }
-            }
-            else if(event.isRightClick()) {
+            if(event.getSlot() == event.getRawSlot() && event.getCurrentItem() != null){
+                ItemStack itemStack = event.getCurrentItem().clone();
                 LoreHandler.removeShopLore(itemStack);
                 NBTHandler.removeNBT(itemStack, "if-uuid");
                 if(event.isShiftClick()) itemStack.setAmount(itemStack.getAmount()*64);
+                int price = getPrice(event.getCurrentItem(),event.isRightClick());
 
-                int amountLack;
-                Map<Integer, ItemStack> returnValue = new HashMap<>();
-                returnValue = p.getInventory().removeItem(itemStack.clone());
-                if(returnValue.size() == 0){
-                    amountLack = 0;
+                if(event.isRightClick() && getPrice(event.getCurrentItem(),true) != 0) {
+                    if(dailyShopPlugin.getInstance().econ.getBalance(p.getName())<price) p.sendMessage(MessageFormatter.prefix("돈이 부족합니다."));
+                    else {
+                        ItemStack giveResult = p.getInventory().addItem(itemStack.clone()).get(0);
+                        int giveAmount = itemStack.getAmount() - (giveResult == null?0:giveResult.getAmount());
+
+                        if(giveAmount == 0) p.sendMessage(MessageFormatter.prefix("인벤토리에 공간이 부족합니다."));
+                        else {
+                            int canBuyAmount;
+                            for(canBuyAmount=1; canBuyAmount<=giveAmount; canBuyAmount++){
+                                if(dailyShopPlugin.getInstance().econ.getBalance(p.getName())<getPrice(event.getCurrentItem(),event.isRightClick()) * canBuyAmount) {
+                                    break;
+                                }
+                            }
+                            canBuyAmount -= 1;
+                            price = getPrice(event.getCurrentItem(),event.isRightClick()) * canBuyAmount;
+                            ItemStack removeItem = itemStack.clone();
+                            if(giveAmount>canBuyAmount){
+                                removeItem.setAmount(giveAmount-canBuyAmount);
+                                p.getInventory().removeItem(removeItem.clone());
+                            }
+                            dailyShopPlugin.getInstance().econ.withdrawPlayer(p.getName(), price);
+                            p.sendMessage(MessageFormatter.prefix("&e&l" + translater.getItemDisplayName(itemStack, p) + MessageFormatter.hasBase(translater.getItemDisplayName(itemStack, p), "&r&f을", "&r&f를") + " &a&l" + price + "&r&f원에 구매하였습니다."));
+                        }
+                    }
                 }
-                else amountLack = returnValue.get(0).getAmount();
-
-                if(amountLack == 1){
-                    p.sendMessage(MessageFormatter.prefix("아이템을 가지고 있지 않습니다."));
-                }
-                else {
-                    int sellAmount = itemStack.getAmount()-amountLack;
-                    int payPrice = getPrice(event.getCurrentItem(),false) * sellAmount;
-
-                    dailyShopPlugin.getInstance().econ.depositPlayer(p.getName(), payPrice);
-                    p.sendMessage(MessageFormatter.prefix(payPrice + "원을 획득하였습니다."));
+                else if(event.isLeftClick() && getPrice(event.getCurrentItem(),false) != 0) {
+                    ItemStack sellResult = p.getInventory().removeItem(itemStack.clone()).get(0);
+                    int sellAmount = itemStack.getAmount() - (sellResult == null?0:sellResult.getAmount());
+                    if(sellAmount == 0) p.sendMessage(MessageFormatter.prefix("아이템을 가지고 있지 않습니다."));
+                    else {
+                        price = getPrice(event.getCurrentItem(),false) * sellAmount;
+                        dailyShopPlugin.getInstance().econ.depositPlayer(p.getName(), price);
+                        p.sendMessage(MessageFormatter.prefix("&e&l" + translater.getItemDisplayName(itemStack, p) + MessageFormatter.hasBase(translater.getItemDisplayName(itemStack, p), "&r&f을", "&r&f를") + " 판매하여 &a&l" + price + "&r&f원을 획득하였습니다."));
+                    }
                 }
             }
         });

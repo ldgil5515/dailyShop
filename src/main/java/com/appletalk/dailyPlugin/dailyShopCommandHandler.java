@@ -20,22 +20,22 @@ public class dailyShopCommandHandler implements CommandExecutor {
         }
 
         switch (args[0].toLowerCase()) {
-            case "help":
+            case "도움말":
                 cmd = new HelpCommand(sender);
                 break;
-            case "open":
+            case "열기":
                 cmd = new OpenCommand(sender);
                 break;
-            case "create":
+            case "생성":
                 cmd = new CreateCommand(sender);
                 break;
-            case "delete":
+            case "삭제":
                 cmd = new DeleteCommand(sender);
                 break;
-            case "list":
+            case "목록":
                 cmd = new ListCommand(sender);
                 break;
-            case "set":
+            case "설정":
                 cmd = new SetCommand(sender);
                 break;
         }
